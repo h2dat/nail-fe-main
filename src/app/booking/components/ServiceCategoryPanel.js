@@ -16,10 +16,10 @@ const ServiceCategoryPanel = ({
         <div
           onClick={() => panelRef.current.toggle()}
           className={
-            "rounded-t-lg cursor-pointer h-fit flex gap-4 pl-4 py-2 bg-white border items-center justify-center"
+            "rounded-t-lg cursor-pointer h-fit flex gap-4 pl-4 py-2 bg-white border items-center justify-center shadow-lg rounded-lg"
           }
         >
-          <div className="w-12 h-12 rounded-full overflow-hidden">
+          <div className="w-12 h-12 rounded-full overflow-hidden ">
             <Image
               src={imageSrc}
               alt={headerTitle}
@@ -28,10 +28,10 @@ const ServiceCategoryPanel = ({
               className={"h-full w-full object-cover"}
             />
           </div>
-          <div className={"flex-grow"}>
+          <div className={"flex-grow "}>
             <p className={"text-[#C9B081] font-semibold"}>{headerTitle}</p>
           </div>
-          <div className={"w-1/6"}>
+          <div className={"w-1/6 "}>
             <svg
               width="28"
               height="29"
@@ -52,8 +52,9 @@ const ServiceCategoryPanel = ({
       }
       ref={panelRef}
       toggleable
+      className={"shadow-lg rounded-lg"}
     >
-      <div className={"flex flex-col"}>
+      <div className={"flex flex-col "}>
         {services.map((item) => (
           <div
             key={item.id}

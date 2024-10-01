@@ -65,19 +65,6 @@ export const staffData = [
   },
 ];
 
-export const dateData = [
-  { day: "Sat", date: "31st", month: "Aug", id: "1" },
-  { day: "Sun", date: "01st", month: "Sep", id: "2" },
-  { day: "Mon", date: "02nd", month: "Sep", id: "3" },
-  { day: "Tue", date: "03rd", month: "Sep", id: "4" },
-  { day: "Wed", date: "04th", month: "Sep", id: "5" },
-  { day: "Thu", date: "05th", month: "Sep", id: "6" },
-  { day: "Fri", date: "06th", month: "Sep", id: "7" },
-  { day: "Sat", date: "07th", month: "Sep", id: "8" },
-  { day: "Sun", date: "08th", month: "Sep", id: "9" },
-  { day: "Mon", date: "09th", month: "Sep", id: "10" },
-];
-
 export const timeData = [
   "09:00 AM",
   "09:15 AM",
@@ -119,7 +106,7 @@ export const timeData = [
 ];
 
 export const data = {
-  services: [
+  natural: [
     {
       id: "1",
       title: "Classic Manicure with Regular Color",

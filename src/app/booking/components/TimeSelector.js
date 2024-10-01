@@ -8,7 +8,6 @@ const TimeSelector = ({
   setSelectedTime,
 }) => {
   const [dateData, setDateData] = useState([]);
-
   useEffect(() => {
     const today = new Date();
     const dates = [];
@@ -35,9 +34,9 @@ const TimeSelector = ({
           {dateData.map((item) => (
             <div
               key={item.id}
-              onClick={() => setSelectedDate(item.id)}
+              onClick={() => setSelectedDate(item)}
               className={`${
-                item.id === selectedDate && "border-2 border-[#C9B081]"
+                item.id === selectedDate?.id && "border-2 border-[#C9B081]"
               } cursor-pointer hover:scale-110 transform transition-transform duration-300 w-24 px-6 py-2 rounded h-auto bg-white flex flex-col items-center justify-center`}
             >
               <p className={"text-xl text-[#9E9D9D]"}>{item.day}</p>

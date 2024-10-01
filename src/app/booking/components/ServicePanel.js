@@ -8,34 +8,40 @@ import taking from "../../../../public/taking.png";
 import waxingmain from "../../../../public/waxingmain.png";
 import ServiceCategoryPanel from "./ServiceCategoryPanel";
 
-const ServicePanel = ({
-  panel1,
-  panel2,
-  panel3,
-  panel4,
-  data,
-  selectedService,
-  setSelectedService,
-}) => {
-  const [isOpen, setIsOpen] = useState({
-    panel1: false,
-    panel2: false,
-    panel3: false,
-    panel4: false,
-  });
+const ServicePanel = ({ data, selectedService, setSelectedService }) => {
+  const [searchQuery, setSearchQuery] = useState("");
+  const [filteredData, setFilteredData] = useState(data);
+
+  const panel1 = useRef(null);
+  const panel2 = useRef(null);
+  const panel3 = useRef(null);
+  const panel4 = useRef(null);
+
+  // Function to filter services based on search query
+  const filterServices = (query) => {
+    const lowerCaseQuery = query.toLowerCase();
+
+    const filtered = {
+      natural: data.natural.filter((service) =>
+        service.title.toLowerCase().includes(lowerCaseQuery)
+      ),
+      enhance: data.enhance.filter((service) =>
+        service.title.toLowerCase().includes(lowerCaseQuery)
+      ),
+      takingOff: data.takingOff.filter((service) =>
+        service.title.toLowerCase().includes(lowerCaseQuery)
+      ),
+      waxing: data.waxing.filter((service) =>
+        service.title.toLowerCase().includes(lowerCaseQuery)
+      ),
+    };
+
+    setFilteredData(filtered); // Update the filtered services
+  };
 
   useEffect(() => {
-    setIsOpen({
-      panel1: false,
-      panel2: false,
-      panel3: false,
-      panel4: false,
-    });
-  }, []);
-
-  const togglePanel = (panel) => {
-    setIsOpen((prev) => ({ ...prev, [panel]: !prev[panel] }));
-  };
+    filterServices(searchQuery); // Filter services every time the query changes
+  }, [searchQuery]);
 
   return (
     <div className={"w-2/3 px-32 mt-10"}>
@@ -44,6 +50,8 @@ const ServicePanel = ({
         <InputText
           className={"w-full"}
           placeholder="What service are you looking for?"
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
         />
       </IconField>
       <div className={"my-2"}>
@@ -51,11 +59,9 @@ const ServicePanel = ({
           panelRef={panel1}
           imageSrc={service1}
           headerTitle="Natural Nails"
-          services={data.services}
+          services={filteredData.natural} 
           selectedService={selectedService}
           setSelectedService={setSelectedService}
-          isOpen={isOpen.panel1}
-          togglePanel={() => togglePanel("panel1")}
         />
       </div>
       <div className={"my-2"}>
@@ -63,11 +69,9 @@ const ServicePanel = ({
           panelRef={panel2}
           imageSrc={enhance}
           headerTitle="Nail Extension / Enhancement"
-          services={data.enhance}
+          services={filteredData.enhance} 
           selectedService={selectedService}
           setSelectedService={setSelectedService}
-          isOpen={isOpen.panel2}
-          togglePanel={() => togglePanel("panel2")}
         />
       </div>
       <div className={"my-2"}>
@@ -75,11 +79,9 @@ const ServicePanel = ({
           panelRef={panel3}
           imageSrc={taking}
           headerTitle="Gel/Dip/Acrylic Taking Off"
-          services={data.takingOff}
+          services={filteredData.takingOff} // Use filtered services
           selectedService={selectedService}
           setSelectedService={setSelectedService}
-          isOpen={isOpen.panel3}
-          togglePanel={() => togglePanel("panel3")}
         />
       </div>
       <div className={"my-2"}>
@@ -87,11 +89,9 @@ const ServicePanel = ({
           panelRef={panel4}
           imageSrc={waxingmain}
           headerTitle="Waxing"
-          services={data.waxing}
+          services={filteredData.waxing} // Use filtered services
           selectedService={selectedService}
           setSelectedService={setSelectedService}
-          isOpen={isOpen.panel4}
-          togglePanel={() => togglePanel("panel4")}
         />
       </div>
     </div>
