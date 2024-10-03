@@ -2,6 +2,7 @@ import React from 'react';
 
 const steps = [
     {'text': 'Services', type: 'service', 'final': false},
+    {'text': 'Inventory ( Optional )', type: 'inventory', 'final': false},
     {'text': 'Staff', type: 'staff', 'final': false},
     {'text': 'Time', type: 'time', 'final': false},
     {'text': 'Infor', type: 'infor', 'final': false},
