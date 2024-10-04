@@ -14,6 +14,7 @@ import TimeSelector from "./components/TimeSelector";
 import InforPanel from "./components/InforPanel";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import InventorySelector from "./components/InventorySelector";
 function Page(props) {
   const [activeStep, setActiveStep] = useState("service");
   const [selectedStaff, setSelectedStaff] = useState("");
@@ -64,10 +65,15 @@ function Page(props) {
       </div>
 
       <div className={"flex justify-center"}>
-        <div className={"flex flex-col items-center w-full px-32 mt-12"}>
+        <div className={"flex flex-col items-center w-full mt-12"}>
           {activeStep === "service" && (
             <div>
               <Image src={svg1} alt={"title"} />
+            </div>
+          )}
+          {activeStep === "inventory" && (
+            <div>
+              <InventorySelector />
             </div>
           )}
           {activeStep === "staff" && (
