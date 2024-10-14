@@ -1,3 +1,4 @@
+'use client'
 import React, { useState, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChevronLeft, faChevronRight } from '@fortawesome/free-solid-svg-icons';
@@ -5,11 +6,31 @@ import CardBooking from '../components/CardBooking';
 
 export default function TimeTable() {
   const today = new Date();
-  const [currentDate, setCurrentDate] = useState(today);
-  const [selectedDay, setSelectedDay] = useState(today.getDate());
-  const [isTransitioning, setIsTransitioning] = useState(false);
+  const [startIndex, setStartIndex] = useState(0);
+  const [dateData, setDateData] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedStaff, setSelectedStaff] = useState(null);
+  const [isTransitioning, setIsTransitioning] = useState(false);
+
+  const generateDateData = (startIndex) => {
+    const dates = [];
+    for (let i = startIndex; i < startIndex + 10; i++) {
+      const date = new Date(today);
+      date.setDate(today.getDate() + i);
+      dates.push({
+        id: i,
+        day: date.toLocaleString("en-US", { weekday: "short" }),
+        date: date.getDate(),
+        month: date.toLocaleString("en-US", { month: "short" }),
+        year: date.getFullYear(),
+      });
+    }
+    return dates;
+  };
+
+  useEffect(() => {
+    setDateData(generateDateData(startIndex));
+  }, [startIndex]);
 
   const initialAppointments = [
     {
@@ -53,67 +74,34 @@ export default function TimeTable() {
   ];
 
   const [appointments, setAppointments] = useState(initialAppointments);
-
-  const handleNextMonth = () => {
-    setIsTransitioning(true);
-    setTimeout(() => {
-      setCurrentDate((prevDate) => {
-        const nextMonth = new Date(prevDate);
-        nextMonth.setMonth(prevDate.getMonth() + 1);
-        setSelectedDay(1);
-        return nextMonth;
-      });
-      setIsTransitioning(false);
-    }, 300);
-  };
-
-  const handlePreviousMonth = () => {
-    setIsTransitioning(true);
-    setTimeout(() => {
-      setCurrentDate((prevDate) => {
-        const previousMonth = new Date(prevDate);
-        previousMonth.setMonth(prevDate.getMonth() - 1);
-        setSelectedDay(1);
-        return previousMonth;
-      });
-      setIsTransitioning(false);
-    }, 300);
-  };
-
-  const daysInMonth = () => {
-    const year = currentDate.getFullYear();
-    const month = currentDate.getMonth();
-    return new Array(new Date(year, month + 1, 0).getDate()).fill(null).map((_, i) => i + 1);
-  };
-
-  useEffect(() => {
-    const newDaysInMonth = daysInMonth();
-    if (!newDaysInMonth.includes(selectedDay)) {
-      setSelectedDay(1);
-    }
-  }, [currentDate]);
-
-  const handleDayClick = (day) => {
-    setSelectedDay(day);
-  };
-
-  // Fake staff data with avatars
-  const staffData = [
+  const [filteredStaff, setFilteredStaff] = useState([
     { id: 1, name: 'Alice Johnson', avatar: 'https://picsum.photos/50/50?random=1' },
     { id: 2, name: 'Bob Smith', avatar: 'https://picsum.photos/50/50?random=2' },
     { id: 3, name: 'Cathy Brown', avatar: 'https://picsum.photos/50/50?random=3' },
     { id: 4, name: 'David Wilson', avatar: 'https://picsum.photos/50/50?random=4' },
     { id: 5, name: 'Eva White', avatar: 'https://picsum.photos/50/50?random=5' },
-  ];
-
-  const [filteredStaff, setFilteredStaff] = useState(staffData);
+  ]);
 
   // Search functionality
   useEffect(() => {
-    setFilteredStaff(
-      staffData.filter(staff => staff.name.toLowerCase().includes(searchTerm.toLowerCase()))
+    setFilteredStaff((prev) => 
+      prev.filter(staff => staff.name.toLowerCase().includes(searchTerm.toLowerCase()))
     );
   }, [searchTerm]);
+
+  const handleNext = () => {
+    setIsTransitioning(true);
+    setStartIndex((prevIndex) => prevIndex + 10);
+    setTimeout(() => setIsTransitioning(false), 300); // Reset transition after 300ms
+  };
+
+  const handlePrevious = () => {
+    setIsTransitioning(true);
+    setStartIndex((prevIndex) => prevIndex - 10);
+    setTimeout(() => setIsTransitioning(false), 300); // Reset transition after 300ms
+  };
+
+  const displayedDates = dateData.slice(0, 10);
 
   const handleStaffClick = (staff) => {
     setSelectedStaff(staff.id === selectedStaff ? null : staff.id); // Toggle selection
@@ -127,33 +115,27 @@ export default function TimeTable() {
 
       <div className='flex flex-col lg:flex-row lg:space-x-8'>
         <div className='flex-1'>
-          <div className='flex justify-between items-center my-4'>
-            <button
-              onClick={handlePreviousMonth}
-              className='bg-blue-500 text-white w-10 h-10 rounded-full flex items-center justify-center'
-            >
-              <FontAwesomeIcon icon={faChevronLeft} />
+          <div className="flex justify-between items-center mt-5">
+            <button onClick={handlePrevious} className="rounded flex items-center">
+              <FontAwesomeIcon icon={faChevronLeft} className="mr-2" />
             </button>
-            <h2 className='text-xl font-semibold'>
-              {currentDate.toLocaleString('default', { month: 'long' })} {currentDate.getFullYear()}
-            </h2>
-            <button
-              onClick={handleNextMonth}
-              className='bg-blue-500 text-white w-10 h-10 rounded-full flex items-center justify-center'
-            >
-              <FontAwesomeIcon icon={faChevronRight} />
+
+            <div className={`flex flex-wrap gap-2 justify-center flex-1 transition-all duration-300 ${isTransitioning ? 'opacity-0 translate-y-4' : 'opacity-100 translate-y-0'}`}>
+              {displayedDates.map((item) => (
+                <div
+                  key={item.id}
+                  className="cursor-pointer hover:scale-110 transform transition-transform duration-300 w-24 px-6 py-2 rounded h-auto bg-white flex flex-col items-center justify-center"
+                >
+                  <p className="text-xl text-center text-[#9E9D9D]">{item.day}</p>
+                  <p className="text-[#333333] text-center text-2xl">{item.date}</p>
+                  <p className="text-xl text-center text-[#9E9D9D]">{item.month} {item.year}</p>
+                </div>
+              ))}
+            </div>
+
+            <button onClick={handleNext} className="rounded flex items-center">
+              <FontAwesomeIcon icon={faChevronRight} className="ml-2" />
             </button>
-          </div>
-          <div className={`flex flex-wrap justify-center gap-2 transition-opacity duration-300 ${isTransitioning ? 'opacity-0' : 'opacity-100'}`}>
-            {daysInMonth().map((day) => (
-              <div
-                key={day}
-                className={`w-10 h-10 flex items-center justify-center border rounded-full cursor-pointer transition-colors ${selectedDay === day ? 'bg-blue-300' : 'hover:bg-blue-100'}`}
-                onClick={() => handleDayClick(day)}
-              >
-                {day}
-              </div>
-            ))}
           </div>
 
           {/* Timeline from 9 AM to 6 PM */}
