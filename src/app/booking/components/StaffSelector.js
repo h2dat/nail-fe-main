@@ -2,8 +2,8 @@ import React from "react";
 import StaffBlock from "@/components/StaffBlock";
 
 const StaffSelector = ({ staffData, selectedStaff, setSelectedStaff }) => (
-  <div className={"w-11/12 px-32 mt-10"}>
-    <div className={"grid grid-cols-3 gap-y-12 gap-x-2"}> 
+  <div className="w-full sm:w-11/12 px-8 sm:px-16 lg:px-32 mt-6 sm:mt-10">
+    <div className="grid grid-cols-1 custom-sm-v1:grid-cols-2 custom-md:grid-cols-3 gap-6 sm:gap-8">
       {staffData.map((item) => (
         <StaffBlock
           key={item.id}

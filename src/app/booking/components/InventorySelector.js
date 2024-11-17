@@ -19,13 +19,13 @@ const InventorySelector = () => {
             <div className="my-10"></div>
 
             <div>
-                <ColorMenuBar /> 
+                <ColorMenuBar />
             </div>
 
-            <div className="mt-10">
+            <div className="mt-10 px-5">
                 <div className="flex justify-center">
                     <textarea
-                        className="border-2 text-2xl text-[#D8B192] border-[#D8B192] outline-none p-2 h-28 md:w-[600px] rounded-2xl placeholder:text-[#D8B192] placeholder:bg-center placeholder:text-2xl resize-none"
+                        className="border-2 text-xl sm:text-2xl text-[#D8B192] border-[#D8B192] outline-none p-2 h-28 w-full md:w-[600px] rounded-2xl placeholder:text-[#D8B192] placeholder:text-lg sm:placeholder:text-2xl resize-none"
                         placeholder="Describe more about your favorite color. We will make you your best nail ever."
                         rows="4"
                     ></textarea>
@@ -33,10 +33,11 @@ const InventorySelector = () => {
             </div>
 
             <div className="mt-5 flex justify-center">
-                <button className="bg-[#D8B192] hover:opacity-80 cursor-pointer text-white text-lg py-2 px-5">
-                    More require color
+                <button className="bg-[#D8B192] hover:opacity-80 cursor-pointer text-white text-base sm:text-lg py-2 px-4 sm:px-5 rounded-lg">
+                    More required color
                 </button>
             </div>
+
         </div>
     );
 };

@@ -7,6 +7,9 @@
 @layer tailwind-utilities {
   @tailwind components;
   @tailwind utilities;
+  .hiddenTailwind {
+    display: none;
+  }
 }
 
 :root {

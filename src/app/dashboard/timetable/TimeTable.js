@@ -14,7 +14,7 @@ export default function TimeTable() {
 
   const generateDateData = (startIndex) => {
     const dates = [];
-    for (let i = startIndex; i < startIndex + 10; i++) {
+    for (let i = startIndex; i < startIndex + 9; i++) {
       const date = new Date(today);
       date.setDate(today.getDate() + i);
       dates.push({
@@ -82,7 +82,6 @@ export default function TimeTable() {
     { id: 5, name: 'Eva White', avatar: 'https://picsum.photos/50/50?random=5' },
   ]);
 
-  // Search functionality
   useEffect(() => {
     setFilteredStaff((prev) => 
       prev.filter(staff => staff.name.toLowerCase().includes(searchTerm.toLowerCase()))
@@ -91,20 +90,20 @@ export default function TimeTable() {
 
   const handleNext = () => {
     setIsTransitioning(true);
-    setStartIndex((prevIndex) => prevIndex + 10);
-    setTimeout(() => setIsTransitioning(false), 300); // Reset transition after 300ms
+    setStartIndex((prevIndex) => prevIndex + 9);
+    setTimeout(() => setIsTransitioning(false), 300);
   };
 
   const handlePrevious = () => {
     setIsTransitioning(true);
-    setStartIndex((prevIndex) => prevIndex - 10);
-    setTimeout(() => setIsTransitioning(false), 300); // Reset transition after 300ms
+    setStartIndex((prevIndex) => prevIndex - 9);
+    setTimeout(() => setIsTransitioning(false), 300); 
   };
 
-  const displayedDates = dateData.slice(0, 10);
+  const displayedDates = dateData.slice(0, 9);
 
   const handleStaffClick = (staff) => {
-    setSelectedStaff(staff.id === selectedStaff ? null : staff.id); // Toggle selection
+    setSelectedStaff(staff.id === selectedStaff ? null : staff.id); 
   };
 
   return (

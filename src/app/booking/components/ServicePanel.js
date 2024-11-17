@@ -44,7 +44,7 @@ const ServicePanel = ({ data, selectedService, setSelectedService }) => {
   }, [searchQuery]);
 
   return (
-    <div className={"w-2/3 px-32 mt-10"}>
+    <div className="w-full custom-sm:w-3/4 px-8 custom-sm:px-16 lg:px-32 mt-6 custom-sm:mt-10">
       <IconField iconPosition="left">
         <InputIcon className="pi pi-search" />
         <InputText
