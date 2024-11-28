@@ -3,12 +3,16 @@ import React, { useState, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChevronLeft, faChevronRight, faClock } from '@fortawesome/free-solid-svg-icons';
 import { useDrag, useDrop } from 'react-dnd';
+import { Button } from 'primereact/button';
+import { InputText } from 'primereact/inputtext';
+import { Dropdown } from 'primereact/dropdown';
+import { Dialog } from 'primereact/dialog';
 
 const ItemType = 'SERVICE';
 const StaffItemType = 'STAFF';
 
 // Draggable Service component
-const DraggableService = ({ service, index, staffAssigned, onAssignStaff }) => {
+const DraggableService = ({ service, index, onClickEditService, staffAssigned, onAssignStaff }) => {
     const [, drag] = useDrag(() => ({
         type: ItemType,
         item: { service, index },
@@ -17,48 +21,31 @@ const DraggableService = ({ service, index, staffAssigned, onAssignStaff }) => {
     return (
         <div
             ref={drag}
+            onClick={() => onClickEditService(service)}
             className="border p-4 rounded-lg mt-2 shadow-lg bg-gray-100 hover:bg-gray-200 transition-transform transform cursor-move"
         >
             <div className="font-semibold text-gray-800">
-                <strong>Service:</strong> {service.name}
+                <strong>Service:</strong> {service.service}
             </div>
             <div className="text-gray-600">
                 <FontAwesomeIcon icon={faClock} className="mr-1" />
-                {service.start} - {service.end}
+                {service.start}
             </div>
             <div className="text-gray-600 mt-1">
                 <strong>Customer:</strong> {service.customer}
             </div>
+            <div className="text-gray-600 mt-1">
+                <strong>Bill:</strong> {service.bill}
+            </div>
             <div className="text-gray-600">
                 <strong>Phone:</strong> {service.phone}
             </div>
-            <div className="text-gray-600 mt-1">
-                <strong>Assigned Staff:</strong> {staffAssigned ? staffAssigned.name : "None"}
-            </div>
-            <button onClick={() => onAssignStaff(service, staffAssigned)} className="mt-2 text-sm text-blue-500">
-                {staffAssigned ? "Change Staff" : "Assign Staff"}
-            </button>
-        </div>
-    );
-};
-
-// Draggable Staff component
-const DraggableStaff = ({ staff, onDropStaff }) => {
-    const [, drag] = useDrag(() => ({
-        type: StaffItemType,
-        item: { staff },
-    }));
-
-    return (
-        <div ref={drag} className="flex items-center cursor-pointer py-3 px-5 rounded-lg transition-all duration-300 ease-in-out">
-            <img src={staff.avatar} alt={staff.name} className="w-12 h-12 rounded-full mr-4" />
-            <span className="text-base font-semibold">{staff.name}</span>
         </div>
     );
 };
 
 // DropTarget component for assigning staff to a service
-const DropTarget = ({ hour, services, onDrop, children, onDropStaff, staff }) => {
+const DropTarget = ({ hour, services, onDrop, children, onDropStaff, staff, openServiceDialog }) => {
     const [{ isOver }, drop] = useDrop(() => ({
         accept: ItemType,
         drop: (item) => onDrop(item.service, hour),
@@ -82,6 +69,7 @@ const DropTarget = ({ hour, services, onDrop, children, onDropStaff, staff }) =>
                             service={service}
                             staffAssigned={service.assignedStaff}
                             onAssignStaff={onDropStaff}
+                            onClickEditService={openServiceDialog}
                         />
                     ))}
                 </div>
@@ -97,6 +85,18 @@ export default function TimeTableUI() {
     const [searchTerm, setSearchTerm] = useState('');
     const [selectedStaff, setSelectedStaff] = useState(null);
     const [appointments, setAppointments] = useState([]);
+    const [serviceDialogVisible, setServiceDialogVisible] = useState(false);
+    const [newService, setNewService] = useState({
+        bill: '',
+        service: '',
+        customer: '',
+        start: '',
+        phone: '',
+        staff: null,
+    });
+
+    const [isEditing, setIsEditing] = useState(false);
+    const [editingService, setEditingService] = useState(null);
 
     const generateDateData = (startIndex) => {
         const dates = [];
@@ -120,29 +120,29 @@ export default function TimeTableUI() {
 
     useEffect(() => {
         const initialAppointments = [
-            { hour: 0, services: [{ name: 'Manicure', customer: 'Sarah', start: '00:00', end: '01:00', phone: '123-456-7890' }] },
+            { hour: 0, services: [{ bill: '30$', service: 'Manicure', customer: 'Sarah', start: '00:00', phone: '123-456-7890' }] },
             { hour: 1, services: [] },
-            { hour: 2, services: [{ name: 'Pedicure', customer: 'Emily', start: '02:00', end: '03:00', phone: '234-567-8901' }] },
+            { hour: 2, services: [{ bill: '30$', service: 'Pedicure', customer: 'Emily', start: '02:00', phone: '234-567-8901' }] },
             { hour: 3, services: [] },
-            { hour: 4, services: [{ name: 'Gel Nails', customer: 'Lily', start: '04:00', end: '05:00', phone: '456-789-0123' }] },
+            { hour: 4, services: [{ bill: '30$', service: 'Gel Nails', customer: 'Lily', start: '04:00', phone: '456-789-0123' }] },
             { hour: 5, services: [] },
-            { hour: 6, services: [{ name: 'Acrylic Nails', customer: 'Jessica', start: '06:00', end: '07:00', phone: '567-890-1234' }] },
+            { hour: 6, services: [{ bill: '30$', service: 'Acrylic Nails', customer: 'Jessica', start: '06:00', phone: '567-890-1234' }] },
             { hour: 7, services: [] },
-            { hour: 8, services: [{ name: 'Nail Art', customer: 'Mia', start: '08:00', end: '09:00', phone: '678-901-2345' }] },
+            { hour: 8, services: [{ bill: '30$', service: 'Nail Art', customer: 'Mia', start: '08:45', phone: '678-901-2345' }] },
             { hour: 9, services: [] },
-            { hour: 10, services: [{ name: 'French Manicure', customer: 'Sophia', start: '10:00', end: '11:00', phone: '789-012-3456' }] },
+            { hour: 10, services: [{ bill: '30$', service: 'French Manicure', customer: 'Sophia', start: '10:00', phone: '789-012-3456' }] },
             { hour: 11, services: [] },
-            { hour: 12, services: [{ name: 'Nail Care', customer: 'Chloe', start: '12:00', end: '13:00', phone: '890-123-4567' }] },
+            { hour: 12, services: [{ bill: '30$', service: 'Nail Care', customer: 'Chloe', start: '12:00', phone: '890-123-4567' }] },
             { hour: 13, services: [] },
-            { hour: 14, services: [{ name: 'Pedicure', customer: 'Olivia', start: '14:00', end: '15:00', phone: '901-234-5678' }] },
+            { hour: 14, services: [{ bill: '30$', service: 'Pedicure', customer: 'Olivia', start: '14:00', phone: '901-234-5678' }] },
             { hour: 15, services: [] },
-            { hour: 16, services: [{ name: 'Acrylic Nails', customer: 'Ava', start: '16:00', end: '17:00', phone: '012-345-6789' }] },
+            { hour: 16, services: [{ bill: '30$', service: 'Acrylic Nails', customer: 'Ava', start: '16:00', phone: '012-345-6789' }] },
             { hour: 17, services: [] },
-            { hour: 18, services: [{ name: 'Manicure', customer: 'Ella', start: '18:00', end: '19:00', phone: '123-456-7890' }] },
+            { hour: 18, services: [{ bill: '30$', service: 'Manicure', customer: 'Ella', start: '18:00', phone: '123-456-7890' }] },
             { hour: 19, services: [] },
-            { hour: 20, services: [{ name: 'Nail Art', customer: 'Lily', start: '20:00', end: '21:00', phone: '234-567-8901' }] },
+            { hour: 20, services: [{ bill: '30$', service: 'Nail Art', customer: 'Lily', start: '20:00', phone: '234-567-8901' }] },
             { hour: 21, services: [] },
-            { hour: 22, services: [{ name: 'Gel Nails', customer: 'Mia', start: '22:00', end: '23:00', phone: '345-678-9012' }] },
+            { hour: 22, services: [{ bill: '30$', service: 'Gel Nails', customer: 'Mia', start: '22:00', phone: '345-678-9012' }] },
             { hour: 23, services: [] },
         ];
 
@@ -189,24 +189,75 @@ export default function TimeTableUI() {
         });
     };
 
-    const handleAssignStaff = (service, staff) => {
-        setAppointments(prevAppointments => {
-            return prevAppointments.map(appt => {
-                const updatedServices = appt.services.map(srv => {
-                    if (srv.name === service.name && srv.customer === service.customer) {
-                        return { ...srv, assignedStaff: staff };
-                    }
-                    return srv;
-                });
-                return { ...appt, services: updatedServices };
+    const openServiceDialog = (serviceToEdit = null) => {
+        if (serviceToEdit) {
+            // Set editing flag first, then update service details
+            setIsEditing(true);
+            setEditingService(serviceToEdit);
+
+            // Then update the new service details with the service being edited
+            setNewService({
+                bill: serviceToEdit.bill,
+                service: serviceToEdit.service,
+                customer: serviceToEdit.customer,
+                start: serviceToEdit.start,
+                phone: serviceToEdit.phone,
+                staff: serviceToEdit.staff,
             });
-        });
+        } else {
+            // If no service to edit, clear the form and reset isEditing to false
+            setIsEditing(false);
+            setNewService({
+                bill: '',
+                service: '',
+                customer: '',
+                start: '',
+                phone: '',
+                staff: null,
+            });
+        }
+
+        // Show the dialog at the end, regardless of editing or adding a new service
+        setServiceDialogVisible(true);
     };
 
+
+    const closeServiceDialog = () => {
+        setServiceDialogVisible(false);
+        setIsEditing(false);
+        setEditingService(null); // Reset editing state
+    };
+
+    const handleServiceChange = (e) => {
+        setNewService({ ...newService, [e.target.name]: e.target.value });
+    };
+
+    const handleStaffChange = (e) => {
+        setNewService({ ...newService, staff: e.value });
+    };
+
+    const handleAddService = () => {
+        const updatedAppointments = [...appointments];
+        updatedAppointments[0].services.push(newService); // Add service to the first hour
+        setAppointments(updatedAppointments);
+        closeServiceDialog();
+    };
+
+    const handleEditService = () => {
+        const updatedAppointments = [...appointments];
+        updatedAppointments.forEach((appt) => {
+            appt.services = appt.services.map((service) =>
+                service === editingService ? { ...newService, start: service.start, end: service.end } : service
+            );
+        });
+        setAppointments(updatedAppointments);
+        closeServiceDialog();
+    };
     return (
         <div className="p-4">
-            <div>
+            <div className='flex justify-between'>
                 <h1 className="text-3xl font-bold">Schedule</h1>
+                <Button label="Add Service" icon="pi pi-plus" onClick={() => openServiceDialog(null)} className="p-button-primary mb-4" />
             </div>
             <div className="flex flex-col lg:flex-row lg:space-x-8">
                 <div className="flex-1">
@@ -240,7 +291,7 @@ export default function TimeTableUI() {
                                 hour={hour}
                                 services={services}
                                 onDrop={handleDrop}
-                                onDropStaff={handleAssignStaff}
+                                openServiceDialog={openServiceDialog}
                             >
                                 <span className="text-lg text-gray-500">{hour.toString().padStart(2, '0')}:00</span>
                             </DropTarget>
@@ -280,6 +331,114 @@ export default function TimeTableUI() {
                     </div>
 
                 </div>
+
+                {/* Add/Edit Service Modal */}
+                <Dialog
+                    visible={serviceDialogVisible}
+                    style={{ width: '50vw' }}
+                    onHide={closeServiceDialog}
+                    header={isEditing ? 'Edit Service' : 'Add New Service'}
+                >
+                    <div className="space-y-4">
+                        <div>
+                            <label htmlFor="bill" className="block text-sm font-medium text-gray-700">Bill</label>
+                            <input
+                                id="bill"
+                                name="bill"
+                                type="text"
+                                value={newService.bill}
+                                onChange={handleServiceChange}
+                                placeholder="Enter Bill"
+                                className="mt-1 p-2 w-full border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
+                            />
+                        </div>
+
+                        <div>
+                            <label htmlFor="service" className="block text-sm font-medium text-gray-700">Service</label>
+                            <input
+                                id="service"
+                                name="service"
+                                type="text"
+                                value={newService.service}
+                                onChange={handleServiceChange}
+                                placeholder="Enter Service Name"
+                                className="mt-1 p-2 w-full border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
+                            />
+                        </div>
+
+                        <div>
+                            <label htmlFor="customer" className="block text-sm font-medium text-gray-700">Customer</label>
+                            <input
+                                id="customer"
+                                name="customer"
+                                type="text"
+                                value={newService.customer}
+                                onChange={handleServiceChange}
+                                placeholder="Enter Customer Name"
+                                className="mt-1 p-2 w-full border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
+                            />
+                        </div>
+
+                        <div>
+                            <label htmlFor="start" className="block text-sm font-medium text-gray-700">Start Time</label>
+                            <input
+                                id="start"
+                                name="start"
+                                type="text"
+                                value={newService.start}
+                                onChange={handleServiceChange}
+                                placeholder="Enter Start Time"
+                                className="mt-1 p-2 w-full border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
+                            />
+                        </div>
+
+                        <div>
+                            <label htmlFor="phone" className="block text-sm font-medium text-gray-700">Phone</label>
+                            <input
+                                id="phone"
+                                name="phone"
+                                type="text"
+                                value={newService.phone}
+                                onChange={handleServiceChange}
+                                placeholder="Enter Phone Number"
+                                className="mt-1 p-2 w-full border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
+                            />
+                        </div>
+
+                        <div>
+                            <label htmlFor="staff" className="block text-sm font-medium text-gray-700">Staff</label>
+                            <select
+                                id="staff"
+                                value={newService.staff}
+                                onChange={handleStaffChange}
+                                className="mt-1 p-2 w-full border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
+                            >
+                                <option value="" disabled>Select a Staff</option>
+                                {filteredStaff.map((staffMember) => (
+                                    <option key={staffMember.id} value={staffMember.id}>{staffMember.name}</option>
+                                ))}
+                            </select>
+                        </div>
+
+                        <div className="mt-4 flex justify-end gap-4">
+                            {/* Cancel Button */}
+                            <Button
+                                label="Cancel"
+                                icon="pi pi-times"
+                                onClick={closeServiceDialog}
+                                className="py-2 px-4 bg-gray-300 text-gray-800 rounded-md hover:bg-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-500"
+                            />
+                            {/* Add/Update Service Button */}
+                            <Button
+                                label={isEditing ? 'Update Service' : 'Add Service'}
+                                icon="pi pi-check"
+                                onClick={isEditing ? handleEditService : handleAddService}
+                                className="py-2 px-4 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                            />
+                        </div>
+                    </div>
+                </Dialog>
+
             </div>
         </div>
     );
