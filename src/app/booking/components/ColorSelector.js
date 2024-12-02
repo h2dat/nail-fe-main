@@ -16,7 +16,7 @@ const colorCodes = [
     "#FFEBCD", "#98FB98", "#FFD700", "#CD5C5C", "#FFE4B5"
 ];
 
-export default function ColorSelector() {
+export default function ColorSelector({ selectedColor, onColorSelect }) {
     const [activeColor, setActiveColor] = useState(null);
     const [startIndex, setStartIndex] = useState(0);
     const colorsPerView = 15;
@@ -32,7 +32,11 @@ export default function ColorSelector() {
     const displayedColors = colorCodes.slice(startIndex, startIndex + colorsPerView);
 
     const handleColorClick = (color) => {
-        setActiveColor((prevColor) => (prevColor === color ? null : color));
+        setActiveColor((prevColor) => {
+            const newColor = prevColor === color ? null : color;
+            onColorSelect(newColor); // Trigger the onColorSelect callback
+            return newColor;
+        });
     };
 
     // Group colors into arrays of five
@@ -56,7 +60,7 @@ export default function ColorSelector() {
                         <Color
                             key={index}
                             color={color}
-                            isActive={activeColor === color}
+                            isActive={selectedColor === color}
                             onClick={() => handleColorClick(color)}
                         />
                     ))}

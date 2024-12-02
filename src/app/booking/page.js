@@ -22,6 +22,7 @@ function Page(props) {
   const [selectedService, setSelectedService] = useState("");
   const [selectedDate, setSelectedDate] = useState("");
   const [selectedTime, setSelectedTime] = useState("");
+  const [selectedColor, setSelectedColor] = useState('#ffffff'); 
 
   const submit = () => {
     if (isEmpty(selectedService)) {
@@ -76,7 +77,7 @@ function Page(props) {
           )}
           {activeStep === "inventory" && (
             <div>
-              <InventorySelector />
+              <InventorySelector selectedColor={selectedColor} setSelectedColor={setSelectedColor}/>
             </div>
           )}
           {activeStep === "staff" && (
@@ -115,6 +116,7 @@ function Page(props) {
               selectedTime={selectedTime}
               selectedDate={selectedDate}
               selectedService={selectedService}
+              selectedColor={selectedColor}
               submit={submit}
             />
           )}

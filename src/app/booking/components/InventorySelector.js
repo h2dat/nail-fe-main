@@ -3,7 +3,7 @@ import Image from "next/image";
 import imageSrc from "../../../../public/svg/svg4.svg";
 import ColorMenuBar from "./ColorMenuBar";
 
-const InventorySelector = () => {
+const InventorySelector = ({selectedColor,setSelectedColor}) => {
     return (
         <div>
             <div className="flex items-center justify-center">
@@ -19,7 +19,7 @@ const InventorySelector = () => {
             <div className="my-10"></div>
 
             <div>
-                <ColorMenuBar />
+                <ColorMenuBar selectedColor={selectedColor} setSelectedColor={setSelectedColor}/>
             </div>
 
             <div className="mt-10 px-5">

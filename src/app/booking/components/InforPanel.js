@@ -4,6 +4,7 @@ import { InputTextarea } from "primereact/inputtextarea";
 import { Button } from "primereact/button";
 
 const InforPanel = ({
+  selectedColor,
   selectedTime,
   selectedService,
   selectedDate,
@@ -19,10 +20,9 @@ const InforPanel = ({
     }
     return null;
   };
-
+  selectedColor
   return (
     <div className="flex flex-col md:flex-row gap-10 justify-center mt-10 px-4">
-      {/* Booking Information Card */}
       <div className="w-full md:w-2/3 p-6 bg-white shadow-lg rounded-lg">
         <h2 className="text-[#D8B192] text-2xl sm:text-3xl md:text-4xl font-bold mb-6 text-center">
           Booking Information
@@ -39,6 +39,18 @@ const InforPanel = ({
               })()}
             </span>
           </div>
+          <div className="flex justify-between items-center">
+            <span className="text-[#D8B192] text-lg sm:text-xl md:text-2xl font-semibold">
+              Color:
+            </span>
+            <span
+              className="pl-4 text-lg sm:text-2xl md:text-3xl font-bold text-[#333333]"
+              style={{ backgroundColor: selectedColor, padding: '5px 15px', borderRadius: '5px', color: '#fff' }}
+            >
+              {selectedColor}
+            </span>
+          </div>
+
           <div className="flex justify-between items-center">
             <span className="text-[#D8B192] text-lg sm:text-xl md:text-2xl font-semibold">Bill:</span>
             <span className="pl-4 text-lg sm:text-2xl md:text-3xl font-bold text-[#333333]">
