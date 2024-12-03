@@ -13,10 +13,11 @@ const StaffItemType = 'STAFF';
 
 // Draggable Service component
 const DraggableService = ({ service, index, onClickEditService, staffAssigned, onAssignStaff }) => {
-    const [, drag] = useDrag(() => ({
-        type: ItemType,
+
+    const [{ isDragging }, drag] = useDrag({
+        type: ItemType,  
         item: { service, index },
-    }));
+    });
 
     return (
         <div
@@ -284,7 +285,7 @@ export default function TimeTableUI() {
                         </button>
                     </div>
 
-                    <div className="mt-10">
+                    <div className="mt-10 overflow-y-auto scrollable-content" style={{ maxHeight: 'calc(100vh - 160px)' }}>
                         {appointments.map(({ hour, services }) => (
                             <DropTarget
                                 key={hour}
