@@ -39,15 +39,18 @@ function Navigation() {
 
         <div className='flex gap-3'>
         <Link 
-            href="/booking" 
-            className="hiddenTailwind lg:flex cursor-pointer px-6 py-3 my-auto text-base font-bold uppercase rounded-xl bg-gradient-to-r from-blue-500 to-blue-700 text-white shadow-lg hover:from-blue-600 hover:to-blue-800 transform transition duration-300 ease-in-out"
-          >            <div>Book now</div>
-          </Link>
-          <Link
-            href="/login"
-            className="hiddenTailwind lg:flex cursor-pointer px-6 py-3 my-auto text-base font-bold uppercase rounded-xl bg-gradient-to-r from-pink-500 to-pink-700 text-white shadow-lg hover:from-pink-600 hover:to-pink-800 transform transition duration-300 ease-in-out"
-          >            <div>Login</div>
-          </Link>
+  href="/booking" 
+  className="hiddenTailwind lg:flex cursor-pointer px-6 py-3 my-auto text-base font-bold uppercase rounded-xl bg-gradient-to-r from-black to-gray-800 text-white shadow-lg hover:from-gray-900 hover:to-black transform transition duration-300 ease-in-out"
+>
+  <div>Book now</div>
+</Link>
+<Link
+  href="/login"
+  className="hiddenTailwind lg:flex cursor-pointer px-6 py-3 my-auto text-base font-bold uppercase rounded-xl bg-gradient-to-r from-black to-gray-800 text-white shadow-lg hover:from-gray-900 hover:to-black transform transition duration-300 ease-in-out"
+>
+  <div>Login</div>
+</Link>
+
         </div>
       </div>
 
