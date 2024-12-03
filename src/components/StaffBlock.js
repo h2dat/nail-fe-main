@@ -18,7 +18,7 @@ function StaffBlock({
       onClick={() => setSelectedStaff(id)}
       className={`${
         isSelectedStaff ? "border-2 border-[#C9B081]" : ""
-      } relative w-72 h-82 shadow-lg rounded-xl overflow-hidden pb-2 cursor-pointer hover:scale-110 transform transition-transform duration-300`}
+      } relative shadow-lg rounded-xl overflow-hidden pb-2 cursor-pointer hover:scale-110 transform transition-transform duration-300`}
     >
       <div className={"w-full h-2/3 bg-red-300"}>
         <Image
@@ -32,7 +32,6 @@ function StaffBlock({
         <p className={"text-[#D9D9D9] text-center font-bold"}>
           {subtitle}
         </p>{" "}
-        {/* Thêm font-bold để subtitle đậm hơn */}
       </div>
       <div
         className={

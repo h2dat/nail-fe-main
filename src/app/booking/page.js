@@ -15,12 +15,14 @@ import InforPanel from "./components/InforPanel";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import InventorySelector from "./components/InventorySelector";
+import Link from "next/link";
 function Page(props) {
   const [activeStep, setActiveStep] = useState("service");
   const [selectedStaff, setSelectedStaff] = useState("");
   const [selectedService, setSelectedService] = useState("");
   const [selectedDate, setSelectedDate] = useState("");
   const [selectedTime, setSelectedTime] = useState("");
+  const [selectedColor, setSelectedColor] = useState('#ffffff'); 
 
   const submit = () => {
     if (isEmpty(selectedService)) {
@@ -60,9 +62,11 @@ function Page(props) {
       <div>
         <Image src={bookingbanner} alt={"banner"} />
       </div>
-      <div className={"mt-10"}>
-        <BookingStep activeStep={activeStep} setActiveStep={setActiveStep} />
-      </div>
+      {activeStep != "complete" && (
+        <div className={"mt-10"}>
+          <BookingStep activeStep={activeStep} setActiveStep={setActiveStep} />
+        </div>
+      )}
 
       <div className={"flex justify-center"}>
         <div className={"flex flex-col items-center w-full mt-12"}>
@@ -73,11 +77,11 @@ function Page(props) {
           )}
           {activeStep === "inventory" && (
             <div>
-              <InventorySelector />
+              <InventorySelector selectedColor={selectedColor} setSelectedColor={setSelectedColor}/>
             </div>
           )}
           {activeStep === "staff" && (
-            <div>
+            <div className="px-5">
               <Image src={svg2} alt={"title"} />
             </div>
           )}
@@ -112,6 +116,7 @@ function Page(props) {
               selectedTime={selectedTime}
               selectedDate={selectedDate}
               selectedService={selectedService}
+              selectedColor={selectedColor}
               submit={submit}
             />
           )}
@@ -120,8 +125,15 @@ function Page(props) {
               <div>
                 <Image src={svg3} alt={"title"} />
               </div>
-              <div className={"text-2xl font-bold mt-12"}>
+              <div className={"text-2xl font-bold mt-12 text-center"}>
                 Your appointment was sent successfully!
+              </div>
+              <div className="mt-6">
+                <Link href="/">
+                  <button className="bg-[#D8B192] hover:opacity-80 cursor-pointer text-white text-lg py-2 px-6 rounded-lg">
+                    Go to Homepage
+                  </button>
+                </Link>
               </div>
             </div>
           )}

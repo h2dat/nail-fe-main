@@ -1,8 +1,13 @@
 import React, { useState } from 'react';
 import ColorSelector from './ColorSelector';
 
-const ColorMenuBar = () => {
+const ColorMenuBar = ({ selectedColor, setSelectedColor }) => {
     const [activeTab, setActiveTab] = useState('predefined');
+
+
+    const handleColorChange = (color) => {
+        setSelectedColor(color);
+    };
 
     return (
         <div>
@@ -21,14 +26,14 @@ const ColorMenuBar = () => {
                 </button>
             </div>
 
-            {activeTab === 'predefined' && <ColorSelector />}
-            {activeTab === 'custom' && <CustomColorInput />}
+            {activeTab === 'predefined' && <ColorSelector selectedColor={selectedColor} onColorSelect={handleColorChange} />}
+            {activeTab === 'custom' && <CustomColorInput selectedColor={selectedColor} onColorChange={handleColorChange} />}
         </div>
     );
 };
 
-const CustomColorInput = () => {
-    const [colorCode, setColorCode] = useState('#ffffff');
+const CustomColorInput = ({ selectedColor, onColorChange }) => {
+    const [colorCode, setColorCode] = useState(selectedColor);
     const [isValid, setIsValid] = useState(true);
 
     const validateColorCode = (code) => {
@@ -41,6 +46,7 @@ const CustomColorInput = () => {
         const value = e.target.value;
         setColorCode(value);
         setIsValid(validateColorCode(value));
+        onColorChange(value);
     };
 
     return (
@@ -57,7 +63,6 @@ const CustomColorInput = () => {
                 className="mt-4 w-40 h-40 rounded-full shadow-xl"
                 style={{ backgroundColor: isValid ? colorCode : '#ffffff' }}
             >
-
             </div>
             {!isValid && <span className="text-red-500 text-center align-middle mt-5">Color not found</span>}
         </div>
